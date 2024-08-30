@@ -1,0 +1,16 @@
+# save the artifact details in a json file
+curl -u droplet-server:ksls14241697 -X GET 'http://165.227.142.22:8081/service/rest/v1/components?repository=npm-hostet&sort=version' | jq "." > artifact.json
+
+# grab the download url from the saved artifact details using 'jq' json processor tool
+artifactDownloadUrl=$(jq '.items[].assets[].downloadUrl' artifact.json --raw-output)
+
+# fetch the artifact with the extracted download url using 'wget' tool
+wget --http-user=droplet-server --http-password=ksls14241697 $artifactDownloadUrl
+
+# unzip the tgz file and open its 'package' folder
+tar zxvf bootcamp-node-project-1.0.0.tgz
+cd package
+
+# Download node module and statrt the application "server.js"
+npm install
+node server.js
